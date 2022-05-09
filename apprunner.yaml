@@ -5,19 +5,16 @@
 version: 1.0
 runtime: nodejs12
 
-pre_build:
-  commands:
-    - read -r -d '' get_access_role_credentials <<END
-    - get_access_role_credentials=$(echo -e "$get_access_role_credentials")
-    - CREDENTIALS=$(python3 -c "$get_access_role_credentials")
-    - export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r .AccessKeyId)
-    - export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r .SecretAccessKey)
-    - export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r .SessionToken)
-
 build:
   commands:
     build:
       - npm ci
+      - read -r -d '' get_access_role_credentials <<END
+      - get_access_role_credentials=$(echo -e "$get_access_role_credentials")
+      - CREDENTIALS=$(python3 -c "$get_access_role_credentials")
+      - export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r .AccessKeyId)
+      - export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r .SecretAccessKey)
+      - export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r .SessionToken)
 
 run:
   command: npm run start
